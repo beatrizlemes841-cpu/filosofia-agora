@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f7f5ef" />
+  <meta name="description" content="Ágora: seu cantinho de revisão de Filosofia, com filósofos, cartões e questões autorais no estilo ENEM." />
+  <title>Ágora — Revisão de Filosofia</title>
+  <style>
+    :root { --ink:#23233a; --muted:#75768b; --surface:#fffefa; --bg:#f7f5ef; --line:#e5e2df; --purple:#6559b7; --lavender:#ede9ff; --coral:#f6a989; --mint:#d6eee3; --danger:#b94c55; --shadow:0 18px 55px rgba(40,32,69,.06); }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--bg); color:var(--ink); font-family:Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height:1.5; }
+    button,input,select { font:inherit; }
+    button { cursor:pointer; }
+    button:focus-visible,input:focus-visible,select:focus-visible { outline:3px solid var(--purple); outline-offset:3px; }
+    .shell { min-height:100vh; display:grid; grid-template-columns:245px minmax(0,1fr); }
+    aside { padding:28px 20px; border-right:1px solid var(--line); background:#fcfaf5; display:flex; flex-direction:column; gap:28px; }
+    .brand { display:flex; align-items:center; gap:12px; padding:0 10px; }
+    .brand-mark { background:var(--ink); color:white; width:41px; height:41px; border-radius:14px; display:grid; place-items:center; font-family:Georgia,serif; font-size:29px; }
+    .brand h1 { font-family:Georgia,serif; font-weight:700; font-size:26px; letter-spacing:-1px; margin:0; line-height:1; }
+    .brand small { display:block; color:var(--muted); margin-top:4px; font-size:11px; letter-spacing:.025em; }
+    .nav { display:grid; gap:7px; }
+    .nav button { display:flex; align-items:center; gap:12px; text-align:left; padding:13px 14px; background:transparent; border:0; border-radius:12px; color:#5a5c72; font-weight:650; }
+    .nav button .nav-icon { font-size:18px; width:22px; text-align:center; }
+    .nav button:hover { background:#f1efec; }
+    .nav button.active { background:var(--lavender); color:#493f99; }
+    .aside-bottom { margin-top:auto; }
+    .mini-card { border:1px solid #e3dff2; border-radius:16px; padding:17px 15px; background:linear-gradient(140deg,#f3f0ff,#faf9ff); }
+    .mini-card strong { display:block; font-size:13px; margin-bottom:6px; }
+    .mini-card p { margin:0 0 12px; color:var(--muted); font-size:12px; }
+    .progress-track { height:8px; border-radius:99px; overflow:hidden; background:#ded8ef; }
+    .progress-fill { height:100%; background:var(--purple); width:0%; border-radius:99px; transition:width .4s; }
+    main { width:100%; max-width:1200px; padding:35px clamp(20px,4vw,66px) 80px; margin:auto; }
+    .topline { display:flex; justify-content:space-between; align-items:center; gap:10px; color:var(--muted); font-size:12px; letter-spacing:.05em; text-transform:uppercase; font-weight:750; margin-bottom:26px; }
+    .pill { background:#fff; border:1px solid var(--line); border-radius:99px; padding:7px 12px; font-size:11px; font-weight:750; text-transform:none; letter-spacing:0; color:var(--purple); white-space:nowrap; }
+    .screen { display:none; animation:fade .22s ease; }
+    .screen.active { display:block; }
+    @keyframes fade { from { opacity:.7; transform:translateY(5px) } to { opacity:1; transform:translateY(0) } }
+    .eyebrow { display:inline-flex; gap:7px; align-items:center; text-transform:uppercase; font-size:11px; letter-spacing:.12em; font-weight:800; color:var(--purple); }
+    h2 { font-family:Georgia,"Times New Roman",serif; font-size:clamp(34px,4.5vw,59px); line-height:1.08; letter-spacing:-.04em; margin:14px 0 16px; font-weight:700; }
+    h3 { font-family:Georgia,serif; font-size:25px; letter-spacing:-.025em; line-height:1.2; margin:0; }
+    h4 { margin:0; font-size:16px; }
+    p { margin:0; }
+    .lede { color:#62637a; max-width:640px; font-size:16px; }
+    .hero { min-height:315px; display:grid; grid-template-columns:1.4fr .6fr; gap:20px; border-radius:26px; padding:42px; background:#e9e4ff; position:relative; overflow:hidden; }
+    .hero > * { position:relative; z-index:1; }
+    .hero h2 { max-width:600px; }
+    .hero p { max-width:460px; color:#5c5480; margin-bottom:24px; }
+    .hero-art { display:grid; place-items:center; font-family:Georgia,serif; }
+    .hero-art .orb { background:#cec3ff; width:min(220px,100%); aspect-ratio:1; border-radius:50%; display:grid; place-items:center; color:#6154ab; font-size:clamp(90px,12vw,170px); box-shadow:inset 20px 0 40px #bdb2f4; transform:rotate(-12deg); }
+    .hero-art::before, .hero-art::after { content:"✳"; position:absolute; font-size:35px; color:#937dd9; }
+    .hero-art::before { top:16px; right:16px; } .hero-art::after { bottom:15px; left:0; font-size:22px; }
+    .btn { border:0; background:var(--purple); color:white; border-radius:11px; font-size:13px; padding:12px 17px; font-weight:760; display:inline-flex; align-items:center; justify-content:center; gap:8px; }
+    .btn:hover { background:#5145a6; }
+    .btn.secondary { background:white; border:1px solid var(--line); color:var(--ink); }
+    .btn.secondary:hover { background:#f7f5f9; }
+    .btn.ghost { background:transparent; color:var(--purple); padding:8px 0; }
+    .btn.danger { background:#fae6e6; color:#a13a44; }
+    .btn:disabled { opacity:.48; cursor:not-allowed; }
+    .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:15px; margin:22px 0 36px; }
+    .stat { border:1px solid var(--line); background:var(--surface); border-radius:18px; padding:20px 21px; box-shadow:var(--shadow); }
+    .stat .num { font-family:Georgia,serif; font-size:36px; line-height:1; font-weight:700; }
+    .stat .lbl { font-size:12px; color:var(--muted); margin-top:9px; }
+    .section-head { display:flex; align-items:end; justify-content:space-between; gap:15px; margin-bottom:19px; }
+    .section-head p { margin-top:7px; color:var(--muted); font-size:13px; }
+    .action-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+    .action-card { background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:23px; min-height:205px; display:flex; flex-direction:column; text-align:left; transition:transform .2s,box-shadow .2s; }
+    .action-card:hover { transform:translateY(-3px); box-shadow:var(--shadow); }
+    .action-icon { font-size:28px; margin-bottom:18px; }
+    .action-card b { font-size:16px; margin-bottom:6px; }
+    .action-card span:nth-of-type(2) { color:var(--muted); font-size:12px; line-height:1.5; }
+    .action-card .arrow { margin-top:auto; align-self:flex-end; color:var(--purple); font-size:23px; }
+    .heading-row { margin:14px 0 28px; }
+    .heading-row h2 { margin:9px 0 8px; }
+    .controls { display:flex; flex-wrap:wrap; gap:9px; align-items:center; justify-content:space-between; margin-bottom:21px; }
+    .filters { display:flex; flex-wrap:wrap; gap:7px; }
+    .chip { padding:9px 13px; border:1px solid var(--line); border-radius:99px; background:white; color:#696a7b; font-size:12px; font-weight:750; }
+    .chip.active { background:var(--ink); border-color:var(--ink); color:white; }
+    .search { width:min(100%,245px); padding:10px 13px; border:1px solid var(--line); border-radius:12px; background:white; color:var(--ink); outline-offset:2px; }
+    .philosopher-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+    .philosopher-card { display:flex; flex-direction:column; align-items:flex-start; gap:9px; text-align:left; border-radius:18px; padding:21px; background:white; border:1px solid var(--line); min-height:195px; transition:transform .15s; }
+    .philosopher-card:hover { transform:translateY(-2px); border-color:#bcb3ea; }
+    .avatar { display:grid; place-items:center; width:46px; height:46px; border-radius:14px; background:var(--lavender); color:#6157ac; font-family:Georgia,serif; font-size:25px; }
+    .philosopher-card b { font-size:17px; }
+    .philosopher-card .tagline { font-size:12px; color:var(--muted); line-height:1.4; }
+    .philosopher-card .period { margin-top:auto; color:var(--purple); font-size:11px; font-weight:750; }
+    .empty { padding:35px 20px; border:1px dashed #d6d1dc; border-radius:17px; text-align:center; color:var(--muted); }
+    .detail { display:none; }
+    .detail.active { display:block; }
+    .detail-head { background:#eae6ff; border-radius:20px; padding:28px; margin:15px 0 19px; }
+    .detail-head h3 { font-size:35px; margin:10px 0; }
+    .detail-head p { color:#5c547f; }
+    .detail-grid { display:grid; grid-template-columns:1.5fr 1fr; gap:17px; }
+    .info-box { border:1px solid var(--line); border-radius:18px; background:white; padding:23px; }
+    .info-box h4 { margin-bottom:11px; color:#504794; }
+    .info-box p { color:#4f5065; font-size:14px; line-height:1.75; }
+    .keyword-list { display:flex; flex-wrap:wrap; gap:7px; margin-top:15px; }
+    .keyword { background:#f0edff; color:#5d519f; border-radius:99px; padding:6px 10px; font-size:11px; font-weight:750; }
+    .back { background:none; border:0; color:var(--purple); font-weight:800; padding:8px 0; }
+    .study-layout { display:grid; grid-template-columns:minmax(0,1fr) 250px; gap:19px; align-items:start; }
+    .flashcard { min-height:300px; border:0; border-radius:23px; padding:35px; color:var(--ink); background:#e8e2ff; box-shadow:var(--shadow); text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; position:relative; }
+    .flashcard.flipped { background:#d9efe6; }
+    .flashcard small { text-transform:uppercase; font-size:10px; letter-spacing:.13em; font-weight:800; color:#6b60a3; position:absolute; top:26px; }
+    .flashcard h3 { font-family:Georgia,serif; font-size:clamp(24px,3.4vw,39px); max-width:580px; line-height:1.25; }
+    .flashcard .hint { font-size:12px; color:#776d9f; position:absolute; bottom:23px; }
+    .flash-actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
+    .sidepanel { background:#fffefa; border-radius:18px; padding:23px; border:1px solid var(--line); }
+    .sidepanel h4 { margin-bottom:10px; }
+    .sidepanel p { font-size:13px; color:var(--muted); margin-bottom:15px; }
+    .sidepanel .progress-track { margin:10px 0; }
+    .select { border:1px solid var(--line); background:white; border-radius:10px; padding:10px 12px; width:100%; color:var(--ink); }
+    .quiz-start { padding:32px; background:white; border:1px solid var(--line); border-radius:22px; max-width:720px; }
+    .quiz-start .row { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:19px 0; }
+    .quiz-start label { color:var(--muted); font-size:12px; font-weight:700; display:grid; gap:7px; }
+    .quiz-panel { max-width:810px; }
+    .quiz-meta { display:flex; justify-content:space-between; gap:10px; color:var(--muted); font-size:12px; font-weight:800; margin-bottom:14px; }
+    .quiz-question { background:white; padding:28px; border:1px solid var(--line); border-radius:20px; margin:16px 0 13px; }
+    .quiz-question .subject { color:var(--purple); font-size:11px; font-weight:800; text-transform:uppercase; margin-bottom:12px; letter-spacing:.07em; }
+    .quiz-question h3 { font-family:Georgia,serif; font-size:25px; line-height:1.35; }
+    .options { display:grid; gap:10px; }
+    .option { background:#fff; padding:14px 16px; text-align:left; color:#424356; border:1px solid var(--line); border-radius:12px; font-size:14px; display:flex; align-items:start; gap:12px; }
+    .option:hover:not(:disabled) { border-color:var(--purple); }
+    .option:disabled { cursor:default; }
+    .option .letter { background:#f2effa; color:#6c5db2; border-radius:8px; padding:2px 7px; font-size:12px; font-weight:800; }
+    .option.correct { border-color:#65a887; background:#eaf7ef; }
+    .option.wrong { border-color:#dd8991; background:#fdf0f0; }
+    .feedback { margin-top:14px; border-radius:13px; padding:15px; background:#f1edf9; border:1px solid #e5ddf5; font-size:13px; line-height:1.65; }
+    .feedback b { display:block; font-size:14px; margin-bottom:5px; }
+    .quiz-footer { display:flex; justify-content:space-between; align-items:center; margin-top:15px; }
+    .result { max-width:700px; background:white; border:1px solid var(--line); padding:36px; border-radius:21px; text-align:center; }
+    .result .grade { font-family:Georgia,serif; font-size:75px; color:var(--purple); line-height:1; margin:20px 0 4px; }
+    .footer { margin-top:50px; color:#9795a1; font-size:11px; border-top:1px solid var(--line); padding-top:20px; }
+    @media (max-width:1060px) { .philosopher-grid {grid-template-columns:repeat(2,minmax(0,1fr))} .action-grid{grid-template-columns:repeat(2,1fr)} .study-layout {grid-template-columns:1fr;} }
+    @media (max-width:730px) { .shell{display:block} aside{position:static; border-right:0; border-bottom:1px solid var(--line); gap:15px; padding:15px} .brand{padding:0 5px} .brand h1{font-size:23px} .nav{grid-template-columns:repeat(4,1fr);gap:4px} .nav button{padding:10px 3px; flex-direction:column; align-items:center; gap:3px; font-size:10px; text-align:center} .aside-bottom{display:none} main{padding:22px 17px 50px} .topline{margin-bottom:20px} .hero{grid-template-columns:1fr; padding:27px; min-height:300px} .hero-art{display:none} .stats{grid-template-columns:repeat(3,1fr);gap:8px} .stat{padding:15px 10px} .stat .num{font-size:27px} .stat .lbl{font-size:10px} .philosopher-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px} .philosopher-card{padding:16px;min-height:180px} .action-grid{grid-template-columns:1fr;gap:10px} .action-card{min-height:135px} .action-card .action-icon{margin-bottom:10px} .detail-grid{grid-template-columns:1fr} .controls{align-items:stretch} .search{width:100%} .quiz-start .row{grid-template-columns:1fr} .quiz-question{padding:21px} .quiz-question h3{font-size:22px} .flashcard{min-height:280px; padding:27px 22px} .detail-head h3{font-size:29px} }
+    @media (max-width:390px){ .philosopher-grid{grid-template-columns:1fr} .nav button{font-size:9px} }
+    @media (prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important;transition:none!important}}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <aside>
+    <div class="brand"><div class="brand-mark" aria-hidden="true">α</div><div><h1>ágora.</h1><small>FILOSOFIA PARA REVISAR</small></div></div>
+    <nav class="nav" aria-label="Seções principais">
+      <button data-nav="home" class="active"><span class="nav-icon" aria-hidden="true">⌂</span>Início</button>
+      <button data-nav="philosophers"><span class="nav-icon" aria-hidden="true">◈</span>Filósofos</button>
+      <button data-nav="cards"><span class="nav-icon" aria-hidden="true">▤</span>Cartões</button>
+      <button data-nav="quiz"><span class="nav-icon" aria-hidden="true">✓</span>Questões</button>
+    </nav>
+    <div class="aside-bottom"><div class="mini-card"><strong>Seu progresso de revisão</strong><p id="asideProgressLabel">Comece no seu ritmo.</p><div class="progress-track"><div class="progress-fill" id="asideProgress"></div></div></div></div>
+  </aside>
+  <main>
+    <div class="topline"><span>SEU ESPAÇO DE ESTUDOS</span><span class="pill">✦ Edição ENEM</span></div>
+    <section id="home" class="screen active" aria-label="Início">
+      <div class="hero"><div><div class="eyebrow">✳ REVISÃO SEM COMPLICAÇÃO</div><h2>Grandes ideias.<br>Pequenas revisões.</h2><p>Um cantinho para entender filósofos, testar sua memória e praticar questões com explicação.</p><button class="btn" data-go="philosophers">Começar a estudar <span aria-hidden="true">→</span></button></div><div class="hero-art" aria-hidden="true"><div class="orb">φ</div></div></div>
+      <div class="stats"><div class="stat"><div class="num" id="statPhilosophers">0</div><div class="lbl">filósofos explorados</div></div><div class="stat"><div class="num" id="statCards">0</div><div class="lbl">cartões dominados</div></div><div class="stat"><div class="num" id="statAccuracy">—</div><div class="lbl">acertos nas questões</div></div></div>
+      <div class="section-head"><div><h3>O que vamos estudar hoje?</h3><p>Escolha a forma de revisão que combina com você.</p></div></div>
+      <div class="action-grid">
+        <button class="action-card" data-go="philosophers"><span class="action-icon">📖</span><b>Entender as ideias</b><span>Resumos, conceitos e aplicações para a prova.</span><span class="arrow">↗</span></button>
+        <button class="action-card" data-go="cards"><span class="action-icon">🗂️</span><b>Treinar a memória</b><span>Cartões que revelam a resposta ao toque.</span><span class="arrow">↗</span></button>
+        <button class="action-card" data-go="quiz"><span class="action-icon">✏️</span><b>Resolver questões</b><span>Perguntas autorais contextualizadas, com gabarito comentado.</span><span class="arrow">↗</span></button>
+      </div>
+    </section>
+    <section id="philosophers" class="screen" aria-label="Filósofos">
+      <div id="philosophersList">
+        <div class="heading-row"><div class="eyebrow">01 / BIBLIOTECA</div><h2>Filósofos e ideias</h2><p class="lede">Explore os principais conceitos sem perder o contexto histórico.</p></div>
+        <div class="controls"><div class="filters" id="periodFilters" role="group" aria-label="Filtrar por período"></div><input class="search" id="searchPhilosophers" type="search" placeholder="Buscar filósofo ou conceito..." aria-label="Buscar filósofo ou conceito" /></div>
+        <div class="philosopher-grid" id="philosopherGrid"></div>
+      </div>
+      <div class="detail" id="philosopherDetail" aria-live="polite"></div>
+    </section>
+    <section id="cards" class="screen" aria-label="Cartões de revisão">
+      <div class="heading-row"><div class="eyebrow">02 / MEMORIZAÇÃO ATIVA</div><h2>Cartões de revisão</h2><p class="lede">Tente responder mentalmente antes de virar o cartão. O segredo é recordar, não apenas reler.</p></div>
+      <div class="study-layout"><div><div id="cardCounter" style="font-size:12px;color:var(--muted);font-weight:750;margin-bottom:12px"></div><button id="flipCard" class="flashcard" aria-label="Virar cartão para mostrar resposta"><small id="cardSide">PERGUNTA</small><h3 id="cardText"></h3><span class="hint">Toque para virar ↻</span></button><div class="flash-actions"><button class="btn secondary" id="cardSkip">Revisar depois ↻</button><button class="btn" id="cardKnow">✓ Já sei</button><button class="btn ghost" id="cardShuffle">Embaralhar</button></div></div><div class="sidepanel"><h4>Conhecimento em construção</h4><p>Marque “Já sei” quando conseguir explicar a ideia sem olhar a resposta. Seu progresso fica salvo neste navegador.</p><strong id="cardProgressLabel" style="font-size:12px"></strong><div class="progress-track"><div class="progress-fill" id="cardProgress"></div></div><label for="cardFilter" style="display:block;margin-top:19px;font-size:12px;font-weight:800;margin-bottom:8px">Ver cartões</label><select id="cardFilter" class="select"><option value="pending">Ainda não dominados</option><option value="all">Todos os cartões</option></select></div></div>
+    </section>
+    <section id="quiz" class="screen" aria-label="Questões de Filosofia">
+      <div class="heading-row"><div class="eyebrow">03 / PRÁTICA CONTEXTUALIZADA</div><h2>Questões comentadas</h2><p class="lede">Exercícios autorais inspirados no raciocínio exigido pelo ENEM. Não são questões oficiais da prova.</p></div>
+      <div id="quizStart" class="quiz-start"><h3>Vamos testar seu raciocínio?</h3><p style="color:var(--muted);margin-top:9px;font-size:14px">Selecione um período e resolva até 10 questões por rodada, com correção logo após responder.</p><div class="row"><label>Período filosófico<select id="quizPeriod" class="select"><option value="Todos">Todos os períodos</option><option value="Antiga">Antiga</option><option value="Medieval">Medieval</option><option value="Moderna">Moderna</option><option value="Contemporânea">Contemporânea</option></select></label><label>Quantidade<select id="quizCount" class="select"><option value="5">5 questões</option><option value="10" selected>Até 10 questões</option><option value="20">Até 20 questões</option></select></label></div><button class="btn" id="startQuiz">Começar questões →</button></div>
+      <div id="quizPlay" class="quiz-panel" hidden></div>
+      <div id="quizResult" class="result" hidden></div>
+    </section>
+    <div class="footer">Ágora é um protótipo educativo independente. Conteúdo e questões autorais para revisão; não substitui materiais didáticos completos.</div>
+  </main>
+</div>
+<script>
+'use strict';
+const philosophers = [
+  {id:'socrates',name:'Sócrates',period:'Antiga',initial:'Σ',label:'Diálogo e exame da própria vida',keywords:['Maiêutica','Ironia socrática','Virtude'],idea:'Sócrates questionava certezas por meio do diálogo. Em vez de transmitir respostas prontas, conduzia o interlocutor a examinar suas opiniões, reconhecer contradições e buscar conceitos mais consistentes.',enem:'Questões sobre pensamento crítico, argumentação e a passagem da opinião não examinada para a reflexão racional.',example:'Uma conversa em que o professor faz perguntas sucessivas para que o aluno descubra falhas no próprio argumento.'},
+  {id:'platao',name:'Platão',period:'Antiga',initial:'Π',label:'Conhecimento além das aparências',keywords:['Mundo inteligível','Mundo sensível','Alegoria da caverna'],idea:'Platão distingue o mundo sensível, sujeito a mudanças, do conhecimento inteligível das Formas ou Ideias. A Alegoria da Caverna representa o percurso de libertação da ignorância em direção à compreensão.',enem:'Questões que contrapõem aparência e conhecimento, educação filosófica e crítica às crenças aceitas sem exame.',example:'Pessoas confundem sombras projetadas com toda a realidade; sair da caverna simboliza rever tais certezas.'},
+  {id:'aristoteles',name:'Aristóteles',period:'Antiga',initial:'Α',label:'Ética das virtudes e vida em comunidade',keywords:['Justo meio','Eudaimonia','Animal político'],idea:'Para Aristóteles, a vida boa envolve o exercício racional das virtudes, adquiridas pelo hábito. A felicidade (eudaimonia) é uma atividade humana plena, ligada à vida ética e política.',enem:'Questões sobre hábito, prudência, virtude como equilíbrio relativo à situação e participação na pólis.',example:'Coragem não é temeridade nem covardia: envolve agir adequadamente diante do perigo.'},
+  {id:'agostinho',name:'Agostinho de Hipona',period:'Medieval',initial:'A',label:'Interioridade, fé e busca da verdade',keywords:['Interioridade','Livre-arbítrio','Iluminação divina'],idea:'Agostinho articula a tradição cristã com elementos platônicos. Valoriza o exame da interioridade e entende a verdade como vinculada à iluminação divina; discute vontade, liberdade e responsabilidade.',enem:'Questões sobre filosofia patrística, relação entre fé e razão e responsabilidade moral.',example:'Refletir sobre as próprias escolhas e reconhecer a vontade humana como elemento da ação moral.'},
+  {id:'aquino',name:'Tomás de Aquino',period:'Medieval',initial:'T',label:'Diálogo entre fé e razão',keywords:['Escolástica','Lei natural','Aristotelismo'],idea:'Tomás de Aquino incorpora categorias aristotélicas à teologia cristã. Sustenta que fé e razão têm campos próprios e podem ser compatíveis, sem serem idênticas.',enem:'Questões sobre pensamento escolástico e integração de raciocínio filosófico com teologia medieval.',example:'Investigar racionalmente fenômenos naturais sem tratar essa investigação como incompatível com a fé.'},
+  {id:'maquiavel',name:'Nicolau Maquiavel',period:'Moderna',initial:'M',label:'Política como ela é',keywords:['Virtù','Fortuna','Manutenção do poder'],idea:'Maquiavel analisa as condições concretas da ação política e a manutenção do Estado. Virtù é a capacidade de agir conforme as circunstâncias; fortuna nomeia o componente incerto dos acontecimentos.',enem:'Questões que diferenciam a análise realista do poder de modelos políticos idealizados.',example:'Um governante adapta sua estratégia à instabilidade de uma crise, em vez de supor que boas intenções bastam.'},
+  {id:'descartes',name:'René Descartes',period:'Moderna',initial:'D',label:'Dúvida metódica e razão',keywords:['Cogito','Racionalismo','Dúvida metódica'],idea:'Descartes usa a dúvida metódica para buscar uma base segura do conhecimento. Mesmo ao duvidar de tudo, reconhece que o próprio ato de pensar confirma a existência do sujeito pensante.',enem:'Questões sobre racionalismo, fundamentação do conhecimento e busca da certeza por um método.',example:'Suspender uma crença que pode ser enganosa até encontrar uma justificativa clara para aceitá-la.'},
+  {id:'hobbes',name:'Thomas Hobbes',period:'Moderna',initial:'H',label:'Segurança e soberania política',keywords:['Estado de natureza','Contrato social','Soberania'],idea:'Hobbes descreve o estado de natureza como condição de insegurança e conflito potencial. O pacto político institui um soberano com autoridade para garantir a paz e a proteção.',enem:'Questões sobre origem do Estado, poder soberano e segurança como fundamento da obediência política.',example:'Indivíduos aceitam uma autoridade comum para reduzir o medo de agressões recíprocas.'},
+  {id:'locke',name:'John Locke',period:'Moderna',initial:'L',label:'Experiência e direitos naturais',keywords:['Empirismo','Direitos naturais','Consentimento'],idea:'No conhecimento, Locke destaca a experiência como origem das ideias. Na política, defende direitos à vida, à liberdade e à propriedade, e um governo legitimado pelo consentimento e limitado por esses direitos.',enem:'Questões sobre liberalismo político, governo limitado e empirismo moderno.',example:'Uma sociedade considera ilegítimo um governo que viola sistematicamente os direitos que deveria proteger.'},
+  {id:'rousseau',name:'Jean-Jacques Rousseau',period:'Moderna',initial:'R',label:'Liberdade e vontade geral',keywords:['Vontade geral','Soberania popular','Desigualdade'],idea:'Rousseau vê a legitimidade política na participação do povo como soberano. A vontade geral se orienta ao interesse comum, não à simples soma de preferências individuais.',enem:'Questões sobre soberania popular, cidadania e relações entre sociedade e desigualdade.',example:'Uma comunidade delibera sobre regras válidas para todos, buscando o bem comum e não privilégios privados.'},
+  {id:'hume',name:'David Hume',period:'Moderna',initial:'H',label:'Experiência, hábito e causalidade',keywords:['Empirismo','Causalidade','Hábito'],idea:'Hume questiona a ideia de que a conexão causal necessária seja diretamente observada. Ao notar eventos constantemente associados, criamos expectativas por costume, não por demonstração de necessidade lógica.',enem:'Questões sobre experiência, indução e limites das certezas fundamentadas no hábito.',example:'Observar o sol nascer repetidas vezes leva à expectativa de novo amanhecer, mas não a uma prova lógica absoluta.'},
+  {id:'kant',name:'Immanuel Kant',period:'Moderna',initial:'K',label:'Autonomia e dever moral',keywords:['Imperativo categórico','Autonomia','Esclarecimento'],idea:'Na ética kantiana, agir moralmente exige considerar princípios que possam valer universalmente, e não apenas consequências desejadas. No esclarecimento, destaca o uso autônomo da razão.',enem:'Questões sobre dever, universalização de máximas, autonomia moral e Iluminismo.',example:'Antes de mentir para obter vantagem, perguntar se seria coerente querer que todos agissem conforme essa regra.'},
+  {id:'hegel',name:'Georg W. F. Hegel',period:'Moderna',initial:'G',label:'História, contradição e reconhecimento',keywords:['Dialética','História','Reconhecimento'],idea:'Hegel compreende a realidade e a história como processos em transformação, marcados por tensões e mediações. O reconhecimento entre consciências tem papel importante em sua filosofia.',enem:'Questões sobre historicidade, movimento dialético e construção histórica da liberdade.',example:'Entender uma instituição não como algo fixo, mas como resultado de conflitos e mudanças ao longo do tempo.'},
+  {id:'marx',name:'Karl Marx',period:'Contemporânea',initial:'M',label:'Trabalho e crítica da sociedade capitalista',keywords:['Alienação','Luta de classes','Materialismo histórico'],idea:'Marx investiga como relações materiais de produção estruturam conflitos sociais. Na crítica ao capitalismo, aborda exploração do trabalho, alienação e antagonismos entre classes.',enem:'Questões sobre divisão do trabalho, desigualdade estrutural e transformação histórica.',example:'O trabalhador produz bens, mas não controla os meios de produção nem o destino do que produziu.'},
+  {id:'nietzsche',name:'Friedrich Nietzsche',period:'Contemporânea',initial:'N',label:'Crítica dos valores estabelecidos',keywords:['Genealogia da moral','Niilismo','Transvaloração'],idea:'Nietzsche questiona a origem e o valor dos padrões morais recebidos. Seu método genealógico investiga como juízos de bem e mal se formaram historicamente.',enem:'Questões sobre crítica à moral tradicional, valores e recusa de verdades tomadas como universais sem exame.',example:'Perguntar quem se beneficia de uma regra moral e em quais condições ela surgiu.'},
+  {id:'arendt',name:'Hannah Arendt',period:'Contemporânea',initial:'H',label:'Política, ação e responsabilidade',keywords:['Banalidade do mal','Espaço público','Totalitarismo'],idea:'Arendt analisa a ação política plural e os mecanismos do totalitarismo. Ao discutir a banalidade do mal, destaca como a ausência de reflexão crítica pode acompanhar práticas de enorme violência.',enem:'Questões sobre autoritarismo, responsabilidade individual e participação no espaço público.',example:'Um agente cumpre ordens burocráticas injustas sem refletir sobre suas consequências humanas.'},
+  {id:'beauvoir',name:'Simone de Beauvoir',period:'Contemporânea',initial:'S',label:'Liberdade e construção social do gênero',keywords:['Existencialismo','Alteridade','Construção social'],idea:'Beauvoir argumenta que papéis atribuídos às mulheres são construídos socialmente, e não simples destinos biológicos. Analisa como relações de poder restringem possibilidades de liberdade.',enem:'Questões sobre gênero, liberdade, desigualdade social e construção histórica de papéis.',example:'A ideia de que certa carreira “não é para meninas” expressa um padrão social, não uma incapacidade natural.'},
+  {id:'foucault',name:'Michel Foucault',period:'Contemporânea',initial:'F',label:'Poder, saber e disciplina',keywords:['Poder disciplinar','Vigilância','Normalização'],idea:'Foucault estuda como práticas e instituições produzem saberes, regulam comportamentos e formam sujeitos. O poder não se resume a ordens do Estado: opera em relações e rotinas sociais.',enem:'Questões sobre vigilância, instituições disciplinares e formas difusas de exercício do poder.',example:'A rotina de vigilância e avaliação constante induz pessoas a ajustar o próprio comportamento.'},
+  {id:'rawls',name:'John Rawls',period:'Contemporânea',initial:'J',label:'Justiça como equidade',keywords:['Véu da ignorância','Posição original','Princípio da diferença'],idea:'Rawls propõe imaginar escolhas de princípios de justiça sem saber qual posição cada pessoa ocupará na sociedade. Seu princípio da diferença admite desigualdades socioeconômicas apenas se beneficiarem os menos favorecidos, junto à igualdade equitativa de oportunidades.',enem:'Questões sobre justiça distributiva, instituições justas e imparcialidade no desenho de regras.',example:'Definir regras educacionais sem saber se você nascerá em uma família rica ou pobre.'},
+  {id:'habermas',name:'Jürgen Habermas',period:'Contemporânea',initial:'J',label:'Diálogo, argumentos e democracia',keywords:['Agir comunicativo','Esfera pública','Ética do discurso'],idea:'Habermas enfatiza a possibilidade de entendimento racional por meio do diálogo livre de coerção. A legitimidade democrática depende de processos públicos inclusivos em que argumentos possam ser discutidos e criticados.',enem:'Questões sobre deliberação, participação pública, consenso argumentado e crítica à manipulação do debate.',example:'Uma decisão coletiva é discutida com justificativas acessíveis e oportunidade real de contestação por todos.'}
+];
+const questions = [
+ {id:1,p:'socrates',q:'Durante um debate, a professora faz sucessivas perguntas para que a turma perceba incoerências nas próprias opiniões. Essa prática se aproxima de qual método?',a:['Maiêutica socrática','Imperativo categórico','Materialismo histórico','Véu da ignorância'],correct:0,why:'A maiêutica associada a Sócrates utiliza o diálogo e perguntas para estimular o exame crítico das próprias ideias.'},
+ {id:2,p:'platao',q:'Ao perceber que imagens compartilhadas podem criar uma visão enganosa da realidade, um estudante decide investigar suas fontes. A situação pode ser comparada a qual ideia platônica?',a:['Contrato social','Saída da caverna','Vontade geral','Princípio da diferença'],correct:1,why:'Na Alegoria da Caverna, libertar-se das aparências é buscar conhecimento para além das imagens tomadas como realidade.'},
+ {id:3,p:'aristoteles',q:'Um jovem aprende a agir com coragem em situações difíceis, sem se expor imprudentemente nem fugir de toda dificuldade. Para Aristóteles, isso ilustra:',a:['A negação da vida política','Uma regra baseada apenas no prazer','A virtude cultivada pelo hábito e pela prudência','A separação entre ética e ação'],correct:2,why:'A coragem é uma virtude construída pelo hábito e guiada pela razão prática, evitando extremos inadequados.'},
+ {id:4,p:'agostinho',q:'Ao discutir responsabilidade pelas escolhas humanas, um pensador cristão valoriza a interioridade e o papel da vontade. Essa abordagem se aproxima de:',a:['Auguste Comte','David Hume','Maquiavel','Agostinho de Hipona'],correct:3,why:'Agostinho relaciona interioridade, vontade e livre-arbítrio às questões morais e à fé cristã.'},
+ {id:5,p:'aquino',q:'Um filósofo medieval defende que a investigação racional da natureza não precisa contrariar a fé religiosa. Sua posição se associa a:',a:['Tomás de Aquino','Nietzsche','Foucault','Hobbes'],correct:0,why:'Na escolástica, Tomás de Aquino articula raciocínio aristotélico e teologia, distinguindo sem opor necessariamente fé e razão.'},
+ {id:6,p:'maquiavel',q:'Um governante analisa circunstâncias concretas e adapta decisões às mudanças imprevisíveis. Essa atitude remete à relação entre:',a:['Mito e alegoria','Virtù e fortuna','Cogito e dúvida','Causalidade e hábito'],correct:1,why:'Em Maquiavel, virtù é a capacidade política de agir eficazmente diante das oportunidades e limites impostos pela fortuna.'},
+ {id:7,p:'descartes',q:'Ao rejeitar provisoriamente crenças incertas para encontrar um fundamento seguro, o sujeito segue um procedimento associado a:',a:['Dúvida metódica cartesiana','Genealogia da moral','Dialética materialista','Vontade geral'],correct:0,why:'Descartes usa a dúvida metodicamente para buscar uma certeza primeira, ligada ao pensamento do próprio sujeito.'},
+ {id:8,p:'hobbes',q:'Pessoas concordam em instituir uma autoridade comum para escapar da insegurança de conflitos permanentes. A justificativa política apresentada se aproxima de:',a:['Foucault','Beauvoir','Hobbes','Hume'],correct:2,why:'Para Hobbes, o poder soberano surge do pacto para estabelecer segurança e paz civil.'},
+ {id:9,p:'locke',q:'Cidadãos contestam um governo por violar direitos fundamentais que deveria proteger. O argumento se aproxima do pensamento de:',a:['Platão','Locke','Hegel','Nietzsche'],correct:1,why:'Locke sustenta a legitimidade de um governo consentido e limitado pela proteção dos direitos naturais.'},
+ {id:10,p:'rousseau',q:'Em uma assembleia, os participantes buscam regras justificadas pelo interesse comum, e não pela soma de vantagens particulares. Trata-se da ideia de:',a:['Poder disciplinar','Cogito','Imperativo hipotético','Vontade geral'],correct:3,why:'A vontade geral, em Rousseau, tem como orientação o bem comum da comunidade política.'},
+ {id:11,p:'hume',q:'Uma pessoa espera que um fenômeno se repita porque o observou muitas vezes, embora não consiga demonstrar uma necessidade lógica. Segundo Hume, a expectativa decorre de:',a:['Hábito','Iluminação divina','Posição original','Virtù'],correct:0,why:'Para Hume, a repetição de experiências produz o costume que sustenta nossas expectativas causais.'},
+ {id:12,p:'kant',q:'Antes de agir, alguém pergunta se a regra de sua conduta poderia valer para todas as pessoas. O critério é característico de:',a:['Maquiavel','Kant','Marx','Arendt'],correct:1,why:'A ética de Kant requer examinar se a máxima da ação pode ser universalizada sem contradição.'},
+ {id:13,p:'hegel',q:'Uma pesquisadora analisa uma instituição como resultado histórico de tensões, conflitos e transformações, em vez de considerá-la imutável. Essa visão se aproxima de:',a:['Empirismo de Locke','Ceticismo radical','Perspectiva dialética de Hegel','Justo meio aristotélico'],correct:2,why:'Em Hegel, a compreensão da realidade envolve processos históricos, contradições e mediações.'},
+ {id:14,p:'marx',q:'Um trabalhador participa de uma produção que não controla e vê o produto do próprio esforço pertencer a quem detém os meios de produção. O fenômeno remete à:',a:['Virtude ética','Alienação do trabalho','Maiêutica','Vontade geral'],correct:1,why:'Marx usa o conceito de alienação para analisar a separação do trabalhador em relação ao produto e às condições de sua atividade.'},
+ {id:15,p:'nietzsche',q:'Um autor investiga quando e por que certos valores passaram a ser considerados bons ou maus, em vez de aceitá-los como naturais. Esse procedimento é chamado de:',a:['Genealogia da moral','Posição original','Dúvida metódica','Escolástica'],correct:0,why:'Nietzsche investiga historicamente a formação e os interesses envolvidos em juízos morais.'},
+ {id:16,p:'arendt',q:'Funcionários executam ordens injustas sem refletir sobre os efeitos de seus atos. A análise do perigo dessa irreflexão se relaciona à noção de:',a:['Justo meio','Causalidade necessária','Banalidade do mal','Mundo inteligível'],correct:2,why:'Arendt usa a expressão “banalidade do mal” para analisar a irreflexão associada a certas ações em contextos de violência extrema.'},
+ {id:17,p:'beauvoir',q:'Uma escola questiona a ideia de que meninas nasceriam menos aptas a determinadas atividades. A crítica se aproxima do pensamento de:',a:['Thomas Hobbes','Simone de Beauvoir','Tomás de Aquino','René Descartes'],correct:1,why:'Beauvoir investiga como a sociedade constrói papéis de gênero que restringem a liberdade das mulheres.'},
+ {id:18,p:'foucault',q:'Em uma instituição, a vigilância constante faz com que indivíduos ajustem seus comportamentos mesmo quando ninguém os observa diretamente. Essa situação exemplifica:',a:['Poder disciplinar','Vontade geral','Contratualismo de Hobbes','Iluminação divina'],correct:0,why:'Foucault analisa mecanismos de disciplina e vigilância que induzem à autovigilância e à normalização de condutas.'},
+ {id:19,p:'rawls',q:'Ao criar regras sociais, um grupo imagina que ninguém conhece sua futura renda, posição social ou talentos. Qual conceito fundamenta essa escolha?',a:['Luta de classes','Véu da ignorância','Imperativo hipotético','Fortuna'],correct:1,why:'O véu da ignorância, em Rawls, procura garantir imparcialidade na escolha de princípios de justiça.'},
+ {id:20,p:'habermas',q:'Uma decisão pública é considerada legítima quando os afetados podem apresentar argumentos, questionar propostas e deliberar sem coerção. Essa concepção se relaciona à:',a:['Alegoria da caverna','Genealogia da moral','Racionalidade comunicativa','Lei natural medieval'],correct:2,why:'Habermas destaca o papel do diálogo argumentado, livre de coerção, na formação de entendimento e legitimidade democrática.'},
+ {id:21,p:'rawls',q:'Uma política permite diferenças de renda, mas exige que elas contribuam para melhorar a situação dos menos favorecidos. Esse critério corresponde ao:',a:['Princípio da diferença','Ceticismo de Hume','Poder disciplinar','Justo meio'],correct:0,why:'Rawls admite desigualdades socioeconômicas sob condições, entre elas o benefício aos menos favorecidos.'},
+ {id:22,p:'habermas',q:'Uma campanha usa boatos e intimidação para impedir que adversários participem de uma discussão pública. Sob a perspectiva de Habermas, o problema central é:',a:['A ausência de uma autoridade soberana absoluta','O enfraquecimento do debate livre e argumentado','A impossibilidade de conhecer pela experiência','O excesso de virtude ética'],correct:1,why:'Coerção e manipulação prejudicam as condições de uma deliberação inclusiva orientada pela força dos argumentos.'}
+];
+const periods=['Todos','Antiga','Medieval','Moderna','Contemporânea'];
+const STORE='agora-filosofia-v1';
+let progress={seen:[],known:[],correct:0,answered:0};
+try { const saved=JSON.parse(localStorage.getItem(STORE)||'null'); if(saved && typeof saved==='object') progress={...progress,...saved}; } catch(_) {}
+progress.seen=Array.isArray(progress.seen)?progress.seen:[];
+progress.known=Array.isArray(progress.known)?progress.known:[];
+progress.correct=Number(progress.correct)||0;
+progress.answered=Number(progress.answered)||0;
+const $=id=>document.getElementById(id);
+function save(){ try{ localStorage.setItem(STORE,JSON.stringify(progress)); }catch(_){} refreshStats(); }
+function refreshStats(){
+ $('statPhilosophers').textContent=progress.seen.length;
+ $('statCards').textContent=progress.known.length;
+ $('statAccuracy').textContent=progress.answered?`${Math.round(progress.correct/progress.answered*100)}%`:'—';
+ const percent=Math.round(progress.known.length/philosophers.length*100);
+ $('asideProgress').style.width=percent+'%'; $('asideProgressLabel').textContent=`${progress.known.length} de ${philosophers.length} cartões dominados`;
+ $('cardProgress').style.width=percent+'%'; $('cardProgressLabel').textContent=`${progress.known.length}/${philosophers.length} dominados`;
+}
+function navigate(view){
+ for(const screen of document.querySelectorAll('.screen'))screen.classList.toggle('active',screen.id===view);
+ for(const btn of document.querySelectorAll('[data-nav]')){const active=btn.dataset.nav===view;btn.classList.toggle('active',active);if(active) btn.setAttribute('aria-current','page'); else btn.removeAttribute('aria-current');}
+ if(view==='cards') renderCard();
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('[data-nav]').forEach(b=>b.addEventListener('click',()=>navigate(b.dataset.nav)));
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>navigate(b.dataset.go)));
+let periodFilter='Todos';
+function renderFilters(){ $('periodFilters').innerHTML=''; periods.forEach(period=>{
+ const btn=document.createElement('button');btn.className='chip'+(period===periodFilter?' active':'');btn.textContent=period;btn.setAttribute('aria-pressed',period===periodFilter?'true':'false');btn.addEventListener('click',()=>{periodFilter=period;renderFilters();renderPhilosophers()});$('periodFilters').appendChild(btn);
+ });}
+function renderPhilosophers(){
+ const query=$('searchPhilosophers').value.toLocaleLowerCase('pt-BR').trim();
+ const matches=philosophers.filter(p=>(periodFilter==='Todos'||p.period===periodFilter) && [p.name,p.label,p.idea,...p.keywords].join(' ').toLocaleLowerCase('pt-BR').includes(query));
+ const grid=$('philosopherGrid');grid.replaceChildren();
+ if(!matches.length){grid.innerHTML='<div class="empty">Nenhum filósofo encontrado. Experimente outro termo.</div>';return;}
+ matches.forEach(p=>{const b=document.createElement('button');b.className='philosopher-card';
+ b.innerHTML=`<span class="avatar" aria-hidden="true">${p.initial}</span><b>${p.name}</b><span class="tagline">${p.label}</span><span class="period">${p.period} <span aria-hidden="true">↗</span></span>`;
+ b.addEventListener('click',()=>openPhilosopher(p.id));grid.appendChild(b);});
+}
+function openPhilosopher(id){
+ const p=philosophers.find(x=>x.id===id);if(!p)return;
+ if(!progress.seen.includes(id)){progress.seen.push(id);save();}
+ $('philosophersList').style.display='none'; const d=$('philosopherDetail');d.classList.add('active');d.replaceChildren();
+ const back=document.createElement('button');back.className='back';back.textContent='← Voltar aos filósofos';back.addEventListener('click',closePhilosopher);d.appendChild(back);
+ const head=document.createElement('div');head.className='detail-head';head.innerHTML=`<div class="eyebrow">${p.period} / FILÓSOFO</div><h3>${p.name}</h3><p>${p.label}</p>`;d.appendChild(head);
+ const grid=document.createElement('div');grid.className='detail-grid';
+ const idea=document.createElement('div');idea.className='info-box';const h4=document.createElement('h4');h4.textContent='A ideia central';const paragraph=document.createElement('p');paragraph.textContent=p.idea;const keys=document.createElement('div');keys.className='keyword-list';p.keywords.forEach(k=>{const span=document.createElement('span');span.className='keyword';span.textContent=k;keys.appendChild(span)});idea.append(h4,paragraph,keys);
+ const app=document.createElement('div');app.className='info-box';const title=document.createElement('h4');title.textContent='Como essa ideia aparece na prova';const desc=document.createElement('p');desc.textContent=p.enem;const exTitle=document.createElement('h4');exTitle.textContent='Exemplo concreto';exTitle.style.marginTop='19px';const ex=document.createElement('p');ex.textContent=p.example;app.append(title,desc,exTitle,ex);grid.append(idea,app);d.appendChild(grid);
+ const next=document.createElement('button');next.className='btn';next.style.marginTop='18px';next.textContent='Revisar com cartões →';next.addEventListener('click',()=>navigate('cards'));d.appendChild(next);
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function closePhilosopher(){ $('philosophersList').style.display='block';$('philosopherDetail').classList.remove('active'); }
+$('searchPhilosophers').addEventListener('input',renderPhilosophers);
+let deck=[],cardIndex=0,flipped=false;
+function shuffle(array){ const out=[...array]; for(let i=out.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[out[i],out[j]]=[out[j],out[i]];}return out; }
+function rebuildDeck(){const useAll=$('cardFilter').value==='all';deck=shuffle(philosophers.filter(p=>useAll||!progress.known.includes(p.id)));cardIndex=0;flipped=false;renderCard();}
+function renderCard(){
+ if(!deck.length) {const all=$('cardFilter').value==='all';$('flipCard').disabled=true;$('cardText').textContent=all?'Sem cartões disponíveis.':'Todos os cartões dominados! 🎉';$('cardSide').textContent='PARABÉNS';$('cardCounter').textContent='';$('cardKnow').disabled=true;$('cardSkip').disabled=true;return;}
+ const p=deck[cardIndex%deck.length];$('flipCard').disabled=false;$('cardKnow').disabled=false;$('cardSkip').disabled=false;$('flipCard').classList.toggle('flipped',flipped);$('cardSide').textContent=flipped?'RESPOSTA':'QUAL É A IDEIA?';$('cardText').textContent=flipped?p.label+': '+p.idea:p.name+' — explique sua ideia central.';
+ $('cardCounter').textContent=`Cartão ${cardIndex%deck.length+1} de ${deck.length}`;
+ $('flipCard').setAttribute('aria-label',flipped?'Virar cartão para mostrar pergunta':'Virar cartão para mostrar resposta');
+}
+function nextCard(){if(!deck.length)return;cardIndex=(cardIndex+1)%deck.length;flipped=false;renderCard();}
+$('flipCard').addEventListener('click',()=>{flipped=!flipped;renderCard()});$('cardSkip').addEventListener('click',nextCard);
+$('cardKnow').addEventListener('click',()=>{if(!deck.length)return;const id=deck[cardIndex%deck.length].id;if(!progress.known.includes(id))progress.known.push(id);save();if($('cardFilter').value==='pending')rebuildDeck();else nextCard();});
+$('cardShuffle').addEventListener('click',rebuildDeck);$('cardFilter').addEventListener('change',rebuildDeck);
+let round=[],quizIndex=0,roundCorrect=0,answeredCurrent=false;
+function startQuiz(){
+ const period=$('quizPeriod').value; const count=Number($('quizCount').value);
+ round=shuffle(questions.filter(q=>period==='Todos'||philosophers.find(p=>p.id===q.p)?.period===period)).slice(0,count);
+ quizIndex=0;roundCorrect=0;answeredCurrent=false;
+ $('quizStart').hidden=true;$('quizResult').hidden=true;$('quizPlay').hidden=false;renderQuestion();
+}
+function renderQuestion(){
+ answeredCurrent=false;const q=round[quizIndex];const p=philosophers.find(p=>p.id===q.p);const node=$('quizPlay');node.replaceChildren();
+ const meta=document.createElement('div');meta.className='quiz-meta';meta.innerHTML=`<span>QUESTÃO ${quizIndex+1} DE ${round.length}</span><span>${roundCorrect} acerto(s) nesta rodada</span>`;
+ const progressTrack=document.createElement('div');progressTrack.className='progress-track';const fill=document.createElement('div');fill.className='progress-fill';fill.style.width=(quizIndex/round.length*100)+'%';progressTrack.appendChild(fill);
+ const body=document.createElement('div');body.className='quiz-question';const sub=document.createElement('div');sub.className='subject';sub.textContent=p.name+' · '+p.period;const title=document.createElement('h3');title.textContent=q.q;body.append(sub,title);
+ const options=document.createElement('div');options.className='options';const optionButtons=[];
+ q.a.forEach((answer,i)=>{const button=document.createElement('button');button.className='option';const letter=document.createElement('span');letter.className='letter';letter.textContent='ABCDE'[i];const label=document.createElement('span');label.textContent=answer;button.append(letter,label);button.addEventListener('click',()=>grade(i));options.appendChild(button);optionButtons.push(button)});
+ const feedback=document.createElement('div');feedback.className='feedback';feedback.hidden=true;feedback.setAttribute('role','status');
+ const footer=document.createElement('div');footer.className='quiz-footer';const quit=document.createElement('button');quit.className='btn ghost';quit.textContent='Encerrar treino';quit.addEventListener('click',()=>{ $('quizPlay').hidden=true;$('quizStart').hidden=false; });
+ const next=document.createElement('button');next.className='btn';next.textContent=quizIndex===round.length-1?'Ver resultado →':'Próxima questão →';next.disabled=true;next.addEventListener('click',()=>{quizIndex++;if(quizIndex>=round.length)showResult();else renderQuestion();});footer.append(quit,next);
+ node.append(meta,progressTrack,body,options,feedback,footer);
+ function grade(selected){if(answeredCurrent)return;answeredCurrent=true;const ok=selected===q.correct;if(ok){roundCorrect++;progress.correct++;}progress.answered++;save();optionButtons.forEach((button,i)=>{button.disabled=true;if(i===q.correct)button.classList.add('correct');else if(i===selected)button.classList.add('wrong');});feedback.hidden=false;const bold=document.createElement('b');bold.textContent=ok?'✓ Resposta correta!':'✕ Ainda não. Veja a explicação:';const explanation=document.createElement('span');explanation.textContent=q.why;feedback.append(bold,explanation);next.disabled=false;next.focus();}
+}
+function showResult(){ $('quizPlay').hidden=true;const result=$('quizResult');result.hidden=false;result.replaceChildren();const header=document.createElement('div');header.className='eyebrow';header.textContent='RODADA FINALIZADA';const title=document.createElement('h3');title.textContent='Mais um passo na sua revisão!';title.style.marginTop='14px';const grade=document.createElement('div');grade.className='grade';grade.textContent=Math.round(roundCorrect/round.length*100)+'%';const sub=document.createElement('p');sub.style.color='var(--muted)';sub.style.marginBottom='22px';sub.textContent=`Você acertou ${roundCorrect} de ${round.length} questões.`;const again=document.createElement('button');again.className='btn';again.textContent='Fazer outra rodada';again.addEventListener('click',()=>{result.hidden=true;$('quizStart').hidden=false});result.append(header,title,grade,sub,again); }
+$('startQuiz').addEventListener('click',startQuiz);
+renderFilters();renderPhilosophers();rebuildDeck();refreshStats();
+</script>
+</body>
+</html>
